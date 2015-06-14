@@ -7,18 +7,61 @@ output:
 
 
 ## Loading and preprocessing the data
-
+```{r loaddata}
+unzip(zipfile="activity.zip")
+data <- read.csv("activity.csv")
+```
 
 
 ## What is mean total number of steps taken per day?
-
-
+```{r}
+library(dplyr)
+aggr_steps <- data %>%
+  group_by(date) %>%
+  summarize(total_steps = sum(steps))
+library(ggplot2)
+qplot(aggr_steps$total_steps, 
+      binwidth = 1000, 
+      xlab="Histogram of Total Steps per Day", 
+      geom="histogram")
+mean(aggr_steps$total_steps, na.rm = TRUE)
+median(aggr_steps$total_steps, na.rm = TRUE)
+```
 
 ## What is the average daily activity pattern?
-
-
+```{r}
+library(dplyr)
+average_5min_steps <- data %>%
+  group_by(interval) %>%
+  summarize(average_steps = mean(steps, na.rm = TRUE))
+ggplot(average_5min_steps,
+       aes(average_5min_steps$interval,
+           average_5min_steps$average_steps)) + 
+    geom_line() + 
+    xlab("5-Minute Interval") +
+    ylab("Average Number of Steps Taken")
+average_5min_steps[(which.max(average_5min_steps$average_steps)),]
+```
 
 ## Imputing missing values
+```{r}
+missing <- is.na(data$steps)
+# How many missing
+table(missing)
+idx <- which(is.na(fill_data$steps))
+fill_data[idx, "steps"] <- average_5min_steps[idx,"average_steps"]
+library(dplyr)
+fill_aggr_steps <- fill_data %>%
+  group_by(date) %>%
+  summarize(total_steps = sum(steps))
+library(ggplot2)
+qplot(fill_aggr_steps$total_steps, 
+      binwidth = 1000, 
+      xlab="Histogram of Total Steps per Day", 
+      geom="histogram")
+mean(fill_aggr_steps$total_steps, na.rm = TRUE)
+median(fill_aggr_steps$total_steps, na.rm = TRUE)
+```
 
 
 
