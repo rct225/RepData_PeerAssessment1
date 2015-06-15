@@ -131,7 +131,7 @@ median(fill_aggr_steps$total_steps, na.rm = TRUE)
 ## [1] 10766.19
 ```
 
-The values are different because instead of omitting the replaced values, they are replaced with a 
+The values are different because instead of omitting the replaced values, they are replaced with an "actual" value.  This increases the sum total of the steps and increases the number of observations resulting in a greater mean.
 ## Are there differences in activity patterns between weekdays and weekends?
 
 ```r
